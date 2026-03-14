@@ -1,6 +1,12 @@
 #!/bin/bash
 # RUNSTR Daily Update Script
 # Automatically fetches fresh data if backup is old, then generates report
+#
+# SECURITY NOTICE:
+# - This script reads RUNSTR_NSEC from environment (set before running)
+# - The nsec is passed securely via stdin to prevent CLI exposure
+# - Cache directory uses restrictive permissions (0700)
+# - Ensure your system does not log environment variables
 
 set -e
 

@@ -39,8 +39,17 @@ class RunstrAnalyticsExtended:
         self.conn = None
         
     def init_cache(self):
-        """Initialize SQLite cache."""
+        """Initialize SQLite cache with restrictive permissions."""
+        # Ensure cache directory exists with restrictive permissions (user only)
+        CACHE_DIR.mkdir(parents=True, exist_ok=True)
+        os.chmod(CACHE_DIR, 0o700)  # Only user can read/write/execute
+        
         self.conn = sqlite3.connect(DB_PATH)
+        
+        # Set restrictive permissions on database file
+        if DB_PATH.exists():
+            os.chmod(DB_PATH, 0o600)  # Only user can read/write
+        
         cursor = self.conn.cursor()
         
         cursor.execute('''
@@ -84,10 +93,12 @@ class RunstrAnalyticsExtended:
         self.conn.commit()
         
     def decode_nsec(self) -> bool:
-        """Decode nsec to hex keys."""
+        """Decode nsec to hex keys using stdin to avoid exposing secret in CLI."""
         try:
+            # Use stdin instead of CLI args to prevent nsec exposure in ps/process list
             result = subprocess.run(
-                ["nak", "decode", self.nsec],
+                ["nak", "decode"],
+                input=self.nsec,
                 capture_output=True, text=True, check=True
             )
             self.hex_sk = result.stdout.strip()

@@ -4,6 +4,18 @@
 echo "📅 RUNSTR Daily Update - Cron Setup"
 echo "======================================"
 echo ""
+echo "⚠️  SECURITY NOTICE:"
+echo "    This script will use RUNSTR_NSEC from your environment."
+echo "    Ensure your system does NOT log environment variables."
+echo "    Cache data is stored with restrictive permissions (user-only)."
+echo "    For maximum security, use full-disk encryption."
+echo ""
+read -p "Continue? (y/N): " CONFIRM
+if [[ ! $CONFIRM =~ ^[Yy]$ ]]; then
+    echo "Setup cancelled."
+    exit 0
+fi
+echo ""
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 CRON_JOB="0 7 * * * $SCRIPT_DIR/daily_update.sh >> $HOME/.cache/runstr-analytics/cron.log 2>&1"

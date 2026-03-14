@@ -1,7 +1,15 @@
 {
   "name": "runstr-analytics",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Advanced RUNSTR fitness analytics with trends and coaching insights",
   "author": "Kjetil",
-  "tags": ["fitness", "analytics", "nostr", "running", "health"]
+  "tags": ["fitness", "analytics", "nostr", "running", "health"],
+  "credentials": [
+    {
+      "name": "RUNSTR_NSEC",
+      "description": "Your Nostr private key (nsec1...) for decrypting RUNSTR backup data",
+      "type": "secret",
+      "required": true
+    }
+  ]
 }

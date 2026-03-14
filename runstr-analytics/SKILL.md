@@ -10,6 +10,10 @@ Advanced fitness analytics and coaching insights for RUNSTR data. Provides trend
 
 ## Setup
 
+**Required: RUNSTR_NSEC environment variable**
+
+This skill requires your Nostr private key (nsec1...) to decrypt RUNSTR backup data.
+
 **Option 1 - For OpenClaw/chat usage:**
 Tell your bot: "Here's my RUNSTR nsec: nsec1..."
 
@@ -17,6 +21,8 @@ Tell your bot: "Here's my RUNSTR nsec: nsec1..."
 ```bash
 export RUNSTR_NSEC="nsec1..."
 ```
+
+⚠️ **Security note:** The nsec is passed securely via stdin (not CLI arguments) to prevent exposure in process lists. Cache files use restrictive permissions (0700/0600).
 
 ---
 
@@ -157,8 +163,26 @@ python3 scripts/analyze_extended.py --nsec nsec1... --force-refresh
 - JSON export (`--format json`)
 - Markdown reports (`--format md`)
 
+## Security Considerations
+
+### Private Key Handling
+- **RUNSTR_NSEC is your Nostr private key** — treat it like a password. Never share it.
+- This skill passes the key via **stdin** (not command-line arguments) to prevent exposure in process lists (`ps`)
+- For added security on multi-user systems, ensure your system is not configured to log environment variables
+
+### Local Data Protection
+- Decrypted workout/journal data is cached locally in `~/.cache/runstr-analytics/runstr_cache.db`
+- Cache directory and database files are created with **restrictive permissions (0700/0600)** — only your user can access them
+- Ensure your disk is encrypted (full-disk encryption) for maximum protection
+
+### Recommended Installation
+- Install on a personal machine with restricted access (single user, disk encryption enabled)
+- Consider pinning the `nak` binary to a specific release rather than using `@latest`
+- Review the cron setup before enabling automatic daily updates
+
 ## Privacy
 
-- NSEC is never stored or logged
-- All processing happens locally
-- Nostr queries use encrypted connections
+- NSEC is never stored or logged in skill output
+- All processing happens locally on your machine
+- Nostr queries use encrypted connections (WSS/WebSocket Secure)
+- No data is sent to external analytics services
